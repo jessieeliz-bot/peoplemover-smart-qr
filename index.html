@@ -360,30 +360,76 @@
     margin-top: 0;
   }
 }
+
+.transit-app-note {
+  margin: 0 0 12px;
+  font-family: 'Roboto Condensed', Arial, sans-serif;
+  color: #4a4a63;
+  line-height: 1.5;
+}
+
+.transit-card-content {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 16px;
+  align-items: center;
+}
+
+.transit-card-text h3 {
+  margin: 0 0 10px;
+}
+
+.transit-card-image-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.transit-card-image {
+  width: 100%;
+  max-width: 100px;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.10);
+}
+
+@media (max-width: 640px) {
+  .transit-card-content {
+    grid-template-columns: 1fr;
+  }
+
+  .transit-card-image {
+    max-width: 92px;
+  }
+
+  .transit-card-image-wrap {
+    justify-content: flex-start;
+  }
+}
   </style>
 </head>
 <body>
   <div class="page">
     <div id="serviceBanner"></div>
 
-    <section class="hero">
-      <img src="dpm-logo-white.png" alt="" class="hero-bg-logo">
-      <div class="eyebrow">Detroit People Mover</div>
-      <h1>Find the Nearest Station</h1>
-      <p class="subtitle">
-        Use your current location to open walking directions to the nearest Detroit People Mover station in Google Maps app or browser.
-      </p>
+   <section class="hero">
+  <img src="dpm-logo-white.png" alt="" class="hero-bg-logo">
+  <div class="eyebrow">Detroit People Mover</div>
+  <h1>Find the Nearest Station</h1>
+  <p class="subtitle">
+    Use your current location to open walking directions to the nearest Detroit People Mover station in Google Maps app or browser.
+  </p>
 
-      <div class="cta-row">
-        <button onclick="findNearest()">Use My Location</button>
-      </div>
+  <div class="cta-row">
+    <button onclick="findNearest()">Use My Location</button>
+  </div>
 
-      <p id="status"></p>
+  <p id="status"></p>
 
-      <div class="footer-note">
-        Start your fun on the Detroit People Mover!
-      </div>
-    </section>
+  <div class="footer-note">
+    Start your fun on the People Mover! Always FREE to ride.
+  </div>
+</section>
 
     <section class="panel">
       <p>
@@ -501,7 +547,7 @@
     });
   }
 
-    function renderHoursInHelpPanel() {
+ function renderHoursInHelpPanel() {
   const infoPanel = document.querySelector(".info-panel");
 
   const hoursHtml = `
@@ -512,6 +558,26 @@
           <div class="hours-day">${item.day}</div>
           <div class="hours-time">${item.time}</div>
         `).join("")}
+      </div>
+    </div>
+
+    <div class="hours-card transit-card">
+      <div class="transit-card-content">
+        <div class="transit-card-text">
+          <h3>Transit App</h3>
+          <p class="transit-app-note">
+            Frequent transit rider? Download the Transit app for regional trip planning.
+          </p>
+          <div class="info-actions">
+            <a class="website-button" href="https://www.rtamichigan.org/transitapp" target="_blank" rel="noopener noreferrer">
+              Download the Transit App
+            </a>
+          </div>
+        </div>
+
+        <div class="transit-card-image-wrap">
+          <img src="transit-app.png" alt="Transit app preview" class="transit-card-image">
+        </div>
       </div>
     </div>
   `;
