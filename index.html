@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nearest People Mover Station</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    button {
+      font-size: 1rem;
+      padding: 12px 18px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 16px;
+      font-weight: bold;
+    }
+    .manual-links {
+      margin-top: 24px;
+    }
+    .manual-links a {
+      display: block;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Find the nearest People Mover station</h1>
+  <p>Tap the button below to open walking directions in Google Maps.</p>
+
+  <button onclick="findNearest()">Use my location</button>
+  <p id="status"></p>
+
+  <div class="manual-links">
+  <h2>Manual station options</h2>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Times%20Square%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJ_yh_IjEtO4gRQu5zDW_F92I&travelmode=walking" target="_blank">Times Square</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Michigan%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJNQbWrDAtO4gRNuSH1WQLT5o&travelmode=walking" target="_blank">Michigan</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Fort%2FCass%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJy9JiFTotO4gRL_vmaVIob0Q&travelmode=walking" target="_blank">Fort/Cass</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Huntington%20Place%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJOR1lkDstO4gRuSrwWiMXhPM&travelmode=walking" target="_blank">Huntington Place</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Water%20Square%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJU-q1pT4tO4gR1KWOCfrkDvw&travelmode=walking" target="_blank">Water Square</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Financial%20District%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJx4yGMiUtO4gRV-Q9Zcf8s4A&travelmode=walking" target="_blank">Financial District</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Millender%20Center%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJGaYvVi8tO4gRMfIILo7K4dw&travelmode=walking" target="_blank">Millender Center</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Renaissance%20Center%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJE4jyMSYtO4gRwaaqbv_nXTc&travelmode=walking" target="_blank">Renaissance Center</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Bricktown%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJdaoYMiktO4gRdEoBcscFi-c&travelmode=walking" target="_blank">Bricktown</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Greektown%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJk6vBpC4tO4gR4hvCODw8DzI&travelmode=walking" target="_blank">Greektown</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Cadillac%20Center%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJpbzAJC4tO4gRSml2vPz-CLw&travelmode=walking" target="_blank">Cadillac Center</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Broadway%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJmXVJIDItO4gRYsWvL43J7M4&travelmode=walking" target="_blank">Broadway</a>
+
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Grand%20Circus%20Park%20People%20Mover%20Station%2C%20Detroit%2C%20MI&destination_place_id=ChIJK0IsxTMtO4gRlD6rgXQvUd4&travelmode=walking" target="_blank">Grand Circus Park</a>
+</div>
+
+<script>
+  const stations = [
+    { name: "Times Square", lat: 42.333602, lng: -83.051855, placeId: "ChIJ_yh_IjEtO4gRQu5zDW_F92I", destination: "Times Square People Mover Station, Detroit, MI" },
+    { name: "Michigan", lat: 42.331425, lng: -83.052213, placeId: "ChIJNQbWrDAtO4gRNuSH1WQLT5o", destination: "Michigan People Mover Station, Detroit, MI" },
+    { name: "Fort Cass", lat: 42.329361, lng: -83.050941, placeId: "ChIJy9JiFTotO4gRL_vmaVIob0Q", destination: "Fort/Cass People Mover Station, Detroit, MI" },
+    { name: "Huntington Place", lat: 42.327556, lng: -83.049583, placeId: "ChIJOR1lkDstO4gRuSrwWiMXhPM", destination: "Huntington Place People Mover Station, Detroit, MI" },
+    { name: "Water Square", lat: 42.32515186, lng: -83.05253712, placeId: "ChIJU-q1pT4tO4gR1KWOCfrkDvw", destination: "Water Square People Mover Station, Detroit, MI" },
+    { name: "Financial District", lat: 42.32870502, lng: -83.04660602, placeId: "ChIJx4yGMiUtO4gRV-Q9Zcf8s4A", destination: "Financial District People Mover Station, Detroit, MI" },
+    { name: "Millender Center", lat: 42.33015613, lng: -83.04194403, placeId: "ChIJGaYvVi8tO4gRMfIILo7K4dw", destination: "Millender Center People Mover Station, Detroit, MI" },
+    { name: "Renaissance Center", lat: 42.33020612, lng: -83.0399496, placeId: "ChIJE4jyMSYtO4gRwaaqbv_nXTc", destination: "Renaissance Center People Mover Station, Detroit, MI" },
+    { name: "Bricktown", lat: 42.33334704, lng: -83.04122223, placeId: "ChIJdaoYMiktO4gRdEoBcscFi-c", destination: "Bricktown People Mover Station, Detroit, MI" },
+    { name: "Greektown", lat: 42.33469767, lng: -83.04229221, placeId: "ChIJk6vBpC4tO4gR4hvCODw8DzI", destination: "Greektown People Mover Station, Detroit, MI" },
+    { name: "Cadillac Center", lat: 42.33366454, lng: -83.04630268, placeId: "ChIJpbzAJC4tO4gRSml2vPz-CLw", destination: "Cadillac Center People Mover Station, Detroit, MI" },
+    { name: "Broadway", lat: 42.33553876, lng: -83.04815605, placeId: "ChIJmXVJIDItO4gRYsWvL43J7M4", destination: "Broadway People Mover Station, Detroit, MI" },
+    { name: "Grand Circus Park", lat: 42.33580892, lng: -83.05055198, placeId: "ChIJK0IsxTMtO4gRlD6rgXQvUd4", destination: "Grand Circus Park People Mover Station, Detroit, MI" }
+  ];
+
+  function distance(lat1, lng1, lat2, lng2) {
+    const toRad = deg => deg * Math.PI / 180;
+    const R = 6371000;
+
+    const phi1 = toRad(lat1);
+    const phi2 = toRad(lat2);
+    const deltaPhi = toRad(lat2 - lat1);
+    const deltaLambda = toRad(lng2 - lng1);
+
+    const a =
+      Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+      Math.cos(phi1) * Math.cos(phi2) *
+      Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  function findNearest() {
+    const status = document.getElementById("status");
+    status.textContent = "Getting your location...";
+
+    if (!navigator.geolocation) {
+      status.textContent = "Geolocation is not supported on this device.";
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+
+        let nearest = null;
+        let minDist = Infinity;
+
+        for (const station of stations) {
+          const d = distance(userLat, userLng, station.lat, station.lng);
+          if (d < minDist) {
+            minDist = d;
+            nearest = station;
+          }
+        }
+
+        if (!nearest) {
+          status.textContent = "Could not determine nearest station.";
+          return;
+        }
+
+        status.textContent = "Opening walking directions to " + nearest.name + "...";
+
+        const url =
+          "https://www.google.com/maps/dir/?api=1" +
+          "&destination=" + encodeURIComponent(nearest.destination) +
+          "&destination_place_id=" + encodeURIComponent(nearest.placeId) +
+          "&travelmode=walking";
+
+        window.location.href = url;
+      },
+      function(error) {
+        status.textContent = "Location access was denied or unavailable. Use one of the manual station links below.";
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  }
+</script>
+</body>
+</html>
