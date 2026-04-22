@@ -515,7 +515,7 @@
 <section class="panel destination-panel">
   <h2>Going somewhere specific?</h2>
   <p>
-    Select your destination to what station to get off at.
+    Once you're on the People Mover, use this guide to find the right station for your destination.
   </p>
 
   <select id="destinationSelect" class="destination-select">
@@ -785,32 +785,32 @@ const destinations = [
 function populateDestinationDropdown() {
   const select = document.getElementById("destinationSelect");
 
-  destinations.forEach((destination, index) => {
+  [...destinations]
+  .sort((a, b) => a.name.localeCompare(b.name))
+  .forEach((destination) => {
     const option = document.createElement("option");
-    option.value = index;
+    option.value = destination.name;
     option.textContent = destination.name;
     select.appendChild(option);
   });
 }
 
 function handleDestinationChange() {
-  const select = document.getElementById("destinationSelect");
-  const resultBox = document.getElementById("destinationResult");
-  const selectedIndex = select.value;
+  const selectedName = select.value;
 
-  if (selectedIndex === "") {
-    resultBox.style.display = "none";
-    resultBox.innerHTML = "";
-    return;
-  }
+if (selectedName === "") {
+  resultBox.style.display = "none";
+  resultBox.innerHTML = "";
+  return;
+}
 
-  const selected = destinations[selectedIndex];
+const selected = destinations.find(destination => destination.name === selectedName);
 
   resultBox.innerHTML = `
     <h3>${selected.name}</h3>
     <p>Ride the People Mover to: <span class="destination-station">${selected.closestStation}</span></p>
     <div class="destination-actions">
-      <a class="destination-button" href="#" onclick="openDestinationWalk(${selectedIndex}); return false;">
+      <a class="destination-button" href="#" onclick="openDestinationWalk('${selected.name.replace(/'/g, "\\'")}'); return false;">
         Walk from ${selected.closestStation} to destination
       </a>
     </div>
@@ -819,8 +819,8 @@ function handleDestinationChange() {
   resultBox.style.display = "block";
 }
 
-function openDestinationWalk(index) {
-  const selected = destinations[index];
+function openDestinationWalk(destinationName) {
+  const selected = destinations.find(destination => destination.name === destinationName);
 
   const url =
     "https://www.google.com/maps/dir/?api=1" +
