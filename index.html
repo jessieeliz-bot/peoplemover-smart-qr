@@ -531,6 +531,10 @@ html[dir="rtl"] .language-wrap {
   font-family: 'Montserrat', Arial, sans-serif;
 }
 
+.manual-result {
+  scroll-margin-top: 18px;
+}
+
 .manual-links button:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 24px rgba(0,0,0,0.14);
@@ -796,6 +800,97 @@ html[dir="rtl"] .hours-card {
 .manual-result.is-visible {
   animation: cardReveal 0.35s ease-out;
 }
+
+.map-choice-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(31, 31, 46, 0.42);
+}
+
+.map-choice-overlay.is-open {
+  display: flex;
+}
+
+.map-choice-card {
+  width: min(100%, 420px);
+  background: #ffffff;
+  color: var(--text-dark);
+  border-radius: 24px;
+  padding: 22px 20px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+  text-align: center;
+  animation: cardReveal 0.25s ease-out;
+}
+
+.map-choice-card h3 {
+  margin: 0 0 8px;
+  color: var(--indigo);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.map-choice-card p {
+  margin: 0 0 16px;
+  font-family: 'Roboto Condensed', Arial, sans-serif;
+  color: #4a4a63;
+  line-height: 1.45;
+}
+
+.map-choice-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.map-choice-button {
+  width: 100%;
+  border-radius: 999px;
+  padding: 14px 18px;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.map-choice-button.google,
+.map-choice-button.apple {
+  width: 100%;
+  background: #ffffff;
+  color: var(--indigo);
+  border: 2px solid #e4e7f0;
+  box-shadow: 0 8px 18px rgba(38, 34, 98, 0.10);
+}
+
+.map-choice-button.google:hover,
+.map-choice-button.apple:hover {
+  background: #f7f7fb;
+  border-color: var(--cyan);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(38, 34, 98, 0.16);
+}
+
+.map-choice-button.cancel {
+  width: 100%;
+  background: transparent;
+  color: #5f6275;
+  border: 2px solid transparent;
+  box-shadow: none;
+  font-weight: 700;
+}
+
+.map-choice-button.cancel:hover {
+  background: #f7f7fb;
+  color: var(--indigo);
+  transform: none;
+  box-shadow: none;
+}
+
+body.map-choice-open {
+  overflow: hidden;
+}
   </style>
 </head>
 <body>
@@ -850,23 +945,23 @@ html[dir="rtl"] .hours-card {
     If location access is unavailable, choose a station below to open walking directions.
   </p>
 
-  <div class="manual-links">
-    <button type="button" onclick="showManualStationResult('Times Square')">Times Square</button>
-    <button type="button" onclick="showManualStationResult('Michigan')">Michigan</button>
-    <button type="button" onclick="showManualStationResult('Fort/Cass')">Fort/Cass</button>
-    <button type="button" onclick="showManualStationResult('Huntington Place')">Huntington Place</button>
-    <button type="button" onclick="showManualStationResult('Water Square')">Water Square</button>
-    <button type="button" onclick="showManualStationResult('Financial District')">Financial District</button>
-    <button type="button" onclick="showManualStationResult('Millender Center')">Millender Center</button>
-    <button type="button" onclick="showManualStationResult('Renaissance Center')">Renaissance Center</button>
-    <button type="button" onclick="showManualStationResult('Bricktown')">Bricktown</button>
-    <button type="button" onclick="showManualStationResult('Greektown')">Greektown</button>
-    <button type="button" onclick="showManualStationResult('Cadillac Center')">Cadillac Center</button>
-    <button type="button" onclick="showManualStationResult('Broadway')">Broadway</button>
-    <button type="button" onclick="showManualStationResult('Grand Circus Park')">Grand Circus Park</button>
-  </div>
+  <div id="manualStationResult" class="destination-result manual-result" style="display:none; margin-bottom:16px;"></div>
 
-  <div id="manualStationResult" class="destination-result" style="display:none; margin-top:16px;"></div>
+<div class="manual-links">
+  <button type="button" onclick="showManualStationResult('Times Square')">Times Square</button>
+  <button type="button" onclick="showManualStationResult('Michigan')">Michigan</button>
+  <button type="button" onclick="showManualStationResult('Fort/Cass')">Fort/Cass</button>
+  <button type="button" onclick="showManualStationResult('Huntington Place')">Huntington Place</button>
+  <button type="button" onclick="showManualStationResult('Water Square')">Water Square</button>
+  <button type="button" onclick="showManualStationResult('Financial District')">Financial District</button>
+  <button type="button" onclick="showManualStationResult('Millender Center')">Millender Center</button>
+  <button type="button" onclick="showManualStationResult('Renaissance Center')">Renaissance Center</button>
+  <button type="button" onclick="showManualStationResult('Bricktown')">Bricktown</button>
+  <button type="button" onclick="showManualStationResult('Greektown')">Greektown</button>
+  <button type="button" onclick="showManualStationResult('Cadillac Center')">Cadillac Center</button>
+  <button type="button" onclick="showManualStationResult('Broadway')">Broadway</button>
+  <button type="button" onclick="showManualStationResult('Grand Circus Park')">Grand Circus Park</button>
+</div>
 </section>
 
     <section class="panel info-panel">
@@ -887,7 +982,26 @@ html[dir="rtl"] .hours-card {
   </div>
 </section>
   </div>
+<div id="mapChoiceOverlay" class="map-choice-overlay" aria-hidden="true">
+  <div class="map-choice-card" role="dialog" aria-modal="true" aria-labelledby="mapChoiceTitle">
+    <h3 id="mapChoiceTitle">Open directions with</h3>
+    <p id="mapChoiceDescription">Choose your preferred maps app for walking directions.</p>
 
+    <div class="map-choice-actions">
+      <button type="button" class="map-choice-button google" onclick="openSelectedMap('google')">
+        Google Maps
+      </button>
+
+      <button type="button" class="map-choice-button apple" onclick="openSelectedMap('apple')">
+        Apple Maps
+      </button>
+
+      <button type="button" class="map-choice-button cancel" onclick="closeMapChoiceOverlay()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
   <script>
     const systemStatus = {
       systemClosed: false,
@@ -1041,50 +1155,119 @@ const stationAccessNotes = {
 };
 const stationAccessibilityAlerts = {
   "Grand Circus Park": {
-    en: "Grand Circus Park is accessible via elevator only.",
-    es: "Grand Circus Park es accesible únicamente por ascensor.",
-    ar: "يمكن الوصول إلى Grand Circus Park عبر المصعد فقط.",
-    bn: "Grand Circus Park-এ শুধুমাত্র লিফটের মাধ্যমে প্রবেশ করা যায়।"
+    en: "Accessible entrance is available by elevator only.",
+    es: "La entrada accesible está disponible únicamente por ascensor.",
+    ar: "يتوفر المدخل الميسر عبر المصعد فقط.",
+    bn: "অ্যাক্সেসযোগ্য প্রবেশপথ শুধুমাত্র লিফটের মাধ্যমে উপলব্ধ।"
   },
   "Michigan": {
-    en: "Michigan Station: Escalator out of service.",
-    es: "Estación Michigan: escalera mecánica fuera de servicio.",
-    ar: "محطة Michigan: السلم المتحرك خارج الخدمة.",
-    bn: "Michigan স্টেশন: এসকেলেটর অচল।"
+    en: "Escalator out of service. Please use the elevator.",
+    es: "Escalera mecánica fuera de servicio. Use el ascensor.",
+    ar: "السلم المتحرك خارج الخدمة. يرجى استخدام المصعد.",
+    bn: "এসকেলেটর অচল। অনুগ্রহ করে লিফট ব্যবহার করুন।"
   },
   "Water Square": {
-    en: "Water Square: Elevator out of service.",
-    es: "Water Square: ascensor fuera de servicio.",
-    ar: "Water Square: المصعد خارج الخدمة.",
-    bn: "Water Square: লিফট অচল।"
+    en: "Elevator out of service. Please use the stairs or escalator if available.",
+    es: "Ascensor fuera de servicio. Use las escaleras o la escalera mecánica si está disponible.",
+    ar: "المصعد خارج الخدمة. يرجى استخدام الدرج أو السلم المتحرك إذا كان متاحًا.",
+    bn: "লিফট অচল। সিঁড়ি বা এসকেলেটর উপলব্ধ থাকলে ব্যবহার করুন।"
   },
   "Renaissance Center": {
-    en: "Renaissance Center: Escalator out of service.",
-    es: "Renaissance Center: escalera mecánica fuera de servicio.",
-    ar: "Renaissance Center: السلم المتحرك خارج الخدمة.",
-    bn: "Renaissance Center: এসকেলেটর অচল।"
+    en: "Escalator out of service. Please use the elevator.",
+    es: "Escalera mecánica fuera de servicio. Use el ascensor.",
+    ar: "السلم المتحرك خارج الخدمة. يرجى استخدام المصعد.",
+    bn: "এসকেলেটর অচল। অনুগ্রহ করে লিফট ব্যবহার করুন।"
   },
   "Broadway": {
-    en: "Broadway: Escalator out of service.",
-    es: "Broadway: escalera mecánica fuera de servicio.",
-    ar: "Broadway: السلم المتحرك خارج الخدمة.",
-    bn: "Broadway: এসকেলেটর অচল।"
+    en: "Escalator out of service. Please use the elevator.",
+    es: "Escalera mecánica fuera de servicio. Use el ascensor.",
+    ar: "السلم المتحرك خارج الخدمة. يرجى استخدام المصعد.",
+    bn: "এসকেলেটর অচল। অনুগ্রহ করে লিফট ব্যবহার করুন।"
   },
   "Greektown": {
-    en: "Greektown Station elevator access is inside Hollywood Casino at Greektown near the Beaubien entrance. To access the first floor through the casino, call Security Command at 313-309-5350. Please note that anyone entering the casino must be at least 21 years of age.",
-    es: "El acceso al ascensor de la estación Greektown está dentro de Hollywood Casino at Greektown, cerca de la entrada de Beaubien. Para acceder al primer piso a través del casino, llame a Security Command al 313-309-5350. Tenga en cuenta que toda persona que ingrese al casino debe tener al menos 21 años de edad.",
-    ar: "يقع الوصول إلى مصعد محطة Greektown داخل Hollywood Casino at Greektown بالقرب من مدخل Beaubien. للوصول إلى الطابق الأول عبر الكازينو، اتصل بـ Security Command على الرقم 313-309-5350. يرجى ملاحظة أن عمر أي شخص يدخل الكازينو يجب أن يكون 21 عامًا على الأقل.",
-    bn: "Greektown স্টেশনের লিফট প্রবেশপথ Hollywood Casino at Greektown-এর ভেতরে, Beaubien প্রবেশদ্বারের কাছে অবস্থিত। ক্যাসিনোর ভেতর দিয়ে প্রথম তলায় যেতে Security Command-এ 313-309-5350 নম্বরে কল করুন। দয়া করে মনে রাখবেন, ক্যাসিনোতে প্রবেশকারীর বয়স কমপক্ষে ২১ বছর হতে হবে।"
-  },
-  "Times Square": {
-    en: "Times Square Station is currently closed for platform resurfacing. Please use Michigan as the nearest alternative station.",
-    es: "La estación Times Square está cerrada actualmente por repavimentación de la plataforma. Utilice Michigan como la estación alternativa más cercana.",
-    ar: "محطة Times Square مغلقة حاليًا لإعادة تأهيل الرصيف. يرجى استخدام Michigan باعتبارها المحطة البديلة الأقرب.",
-    bn: "প্ল্যাটফর্ম সংস্কারের জন্য Times Square স্টেশন বর্তমানে বন্ধ রয়েছে। নিকটতম বিকল্প স্টেশন হিসেবে Michigan ব্যবহার করুন।"
+    en: "Elevator access is inside Hollywood Casino at Greektown near the Beaubien entrance. To access the first floor through the casino, call Security Command at 313-309-5350. Please note that anyone entering the casino must be at least 21 years of age.",
+    es: "El acceso al ascensor está dentro de Hollywood Casino at Greektown, cerca de la entrada de Beaubien. Para acceder al primer piso a través del casino, llame a Security Command al 313-309-5350. Tenga en cuenta que toda persona que ingrese al casino debe tener al menos 21 años.",
+    ar: "يقع الوصول إلى المصعد داخل Hollywood Casino at Greektown بالقرب من مدخل Beaubien. للوصول إلى الطابق الأول عبر الكازينو، اتصل بـ Security Command على الرقم 313-309-5350. يرجى ملاحظة أن عمر أي شخص يدخل الكازينو يجب أن يكون 21 عامًا على الأقل.",
+    bn: "লিফট প্রবেশপথ Hollywood Casino at Greektown-এর ভেতরে, Beaubien প্রবেশদ্বারের কাছে অবস্থিত। ক্যাসিনোর ভেতর দিয়ে প্রথম তলায় যেতে Security Command-এ 313-309-5350 নম্বরে কল করুন। দয়া করে মনে রাখবেন, ক্যাসিনোতে প্রবেশকারীর বয়স কমপক্ষে ২১ বছর হতে হবে।"
   }
 };
 let currentLanguage = "en";
+let pendingMapRequest = null;
 
+function buildGoogleMapsUrl(request) {
+  if (request.type === "station") {
+    return (
+      "https://www.google.com/maps/dir/?api=1" +
+      "&destination=" + encodeURIComponent(request.destinationText) +
+      "&destination_place_id=" + encodeURIComponent(request.destinationPlaceId) +
+      "&travelmode=walking"
+    );
+  }
+
+  if (request.type === "destinationWalk") {
+    return (
+      "https://www.google.com/maps/dir/?api=1" +
+      "&origin=" + encodeURIComponent(request.originText) +
+      "&origin_place_id=" + encodeURIComponent(request.originPlaceId) +
+      "&destination=" + encodeURIComponent(request.destinationText) +
+      "&destination_place_id=" + encodeURIComponent(request.destinationPlaceId) +
+      "&travelmode=walking"
+    );
+  }
+
+  return "#";
+}
+
+function buildAppleMapsUrl(request) {
+  if (request.type === "station") {
+    return (
+      "https://maps.apple.com/?" +
+      "saddr=" +
+      "&daddr=" + encodeURIComponent(request.destinationLat + "," + request.destinationLng) +
+      "&dirflg=w"
+    );
+  }
+
+  if (request.type === "destinationWalk") {
+    return (
+      "https://maps.apple.com/?" +
+      "saddr=" + encodeURIComponent(request.originLat + "," + request.originLng) +
+      "&daddr=" + encodeURIComponent(request.destinationLat + "," + request.destinationLng) +
+      "&dirflg=w"
+    );
+  }
+
+  return "#";
+}
+
+function showMapChoiceOverlay(request) {
+  pendingMapRequest = request;
+
+  const overlay = document.getElementById("mapChoiceOverlay");
+  overlay.classList.add("is-open");
+  overlay.setAttribute("aria-hidden", "false");
+  document.body.classList.add("map-choice-open");
+}
+
+function closeMapChoiceOverlay() {
+  const overlay = document.getElementById("mapChoiceOverlay");
+  overlay.classList.remove("is-open");
+  overlay.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("map-choice-open");
+  pendingMapRequest = null;
+}
+
+function openSelectedMap(provider) {
+  if (!pendingMapRequest) return;
+
+  const url =
+    provider === "apple"
+      ? buildAppleMapsUrl(pendingMapRequest)
+      : buildGoogleMapsUrl(pendingMapRequest);
+
+  closeMapChoiceOverlay();
+  window.location.href = url;
+}
 const translations = {
   en: {
     heroTitle: "Find the Nearest Station",
@@ -1461,18 +1644,18 @@ function showManualStationResult(stationName) {
   const accessNote = getCurrentStationAccessNote(stationName);
   const accessibilityNotice = getCurrentAccessibilityAlert(stationName);
 
-  const url =
-    "https://www.google.com/maps/dir/?api=1" +
-    "&destination=" + encodeURIComponent(station.destination) +
-    "&destination_place_id=" + encodeURIComponent(station.placeId) +
-    "&travelmode=walking";
-
   resultBox.innerHTML = `
     <h3 translate="no">${stationName}</h3>
     ${accessNote ? `<p class="destination-access-note"><strong>${t("entranceTip")}</strong> ${accessNote}</p>` : ""}
     ${accessibilityNotice ? `<p class="accessibility-alert"><strong>${t("accessibilityNotice")}</strong> ${accessibilityNotice}</p>` : ""}
     <div class="destination-actions">
-      <a class="destination-button" href="${url}" target="_blank" rel="noopener noreferrer">
+      <a class="destination-button" href="#" onclick="showMapChoiceOverlay({
+        type: 'station',
+        destinationText: '${station.destination.replace(/'/g, "\\'")}',
+        destinationPlaceId: '${station.placeId}',
+        destinationLat: ${station.lat},
+        destinationLng: ${station.lng}
+      }); return false;">
         ${t("takeMeThere")}
       </a>
     </div>
@@ -1482,17 +1665,16 @@ function showManualStationResult(stationName) {
   resultBox.classList.remove("is-visible");
   void resultBox.offsetWidth;
   resultBox.classList.add("is-visible");
+
+  resultBox.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
 }
 function renderNearestStationResult(station) {
   const resultBox = document.getElementById("locationResult");
   const accessNote = getCurrentStationAccessNote(station.name);
   const accessibilityNotice = getCurrentAccessibilityAlert(station.name);
-
-  const url =
-    "https://www.google.com/maps/dir/?api=1" +
-    "&destination=" + encodeURIComponent(station.destination) +
-    "&destination_place_id=" + encodeURIComponent(station.placeId) +
-    "&travelmode=walking";
 
   resultBox.innerHTML = `
     <h3>${t("nearestStationHeading")}</h3>
@@ -1502,7 +1684,13 @@ function renderNearestStationResult(station) {
     ${accessNote ? `<p class="location-access-note"><strong>${t("entranceTip")}</strong> ${accessNote}</p>` : ""}
     ${accessibilityNotice ? `<p class="location-accessibility-alert"><strong>${t("accessibilityNotice")}</strong> ${accessibilityNotice}</p>` : ""}
     <div class="location-actions">
-      <a class="location-button" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Take me there">
+      <a class="location-button" href="#" onclick="showMapChoiceOverlay({
+        type: 'station',
+        destinationText: '${station.destination.replace(/'/g, "\\'")}',
+        destinationPlaceId: '${station.placeId}',
+        destinationLat: ${station.lat},
+        destinationLng: ${station.lng}
+      }); return false;" aria-label="Take me there">
         <span class="location-button-main">${t("takeMeThere")}</span>
       </a>
     </div>
@@ -1516,17 +1704,18 @@ function renderNearestStationResult(station) {
 function openDestinationWalk(destinationName) {
   const selected = destinations.find(destination => destination.name === destinationName);
 
-  const url =
-    "https://www.google.com/maps/dir/?api=1" +
-    "&origin=" + encodeURIComponent(selected.closestStation + " People Mover Station, Detroit, MI") +
-    "&origin_place_id=" + encodeURIComponent(selected.stationPlaceId) +
-    "&destination=" + encodeURIComponent(selected.name + ", Detroit, MI") +
-    "&destination_place_id=" + encodeURIComponent(selected.destinationPlaceId) +
-    "&travelmode=walking";
-
-  window.location.href = url;
+  showMapChoiceOverlay({
+    type: "destinationWalk",
+    originText: selected.closestStation + " People Mover Station, Detroit, MI",
+    originPlaceId: selected.stationPlaceId,
+    originLat: selected.stationLat,
+    originLng: selected.stationLng,
+    destinationText: selected.name + ", Detroit, MI",
+    destinationPlaceId: selected.destinationPlaceId,
+    destinationLat: selected.destinationLat,
+    destinationLng: selected.destinationLng
+  });
 }
-
     function findNearest() {
   const status = document.getElementById("status");
   const resultBox = document.getElementById("locationResult");
