@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detroit People Mover Station Finder Beta Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --magenta: #EC008C;
+      --cyan: #00AEEF;
+      --purple: #92278F;
+      --blue: #006DB8;
+      --indigo: #262262;
+      --yellow: #FFDE17;
+      --white: #FFFFFF;
+      --light-bg: #f7f7fb;
+      --text-dark: #1f1f2e;
+      --text-muted: #4a4a63;
+      --panel-border: #e7e9f2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: var(--white);
+      background:
+        linear-gradient(135deg, rgba(0,109,184,.92), rgba(146,39,143,.90) 55%, rgba(236,0,140,.88)),
+        linear-gradient(180deg, var(--blue), var(--purple));
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(6px);
+      border-radius: 24px;
+      padding: 28px 24px 30px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+    }
+
+    .hero-bg-logo {
+      position: absolute;
+      right: -10px;
+      top: 10px;
+      width: 140px;
+      max-width: 35%;
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero > *:not(.hero-bg-logo) {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      font-family: 'Roboto Condensed', Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.8rem;
+      color: var(--yellow);
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.04;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      font-family: 'Roboto Condensed', Arial, sans-serif;
+      font-size: 1.08rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.94);
+      max-width: 620px;
+    }
+
+    .beta-note {
+      margin: 0;
+      display: inline-block;
+      background: rgba(255, 222, 23, 0.16);
+      border-left: 4px solid var(--yellow);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-family: 'Roboto Condensed', Arial, sans-serif;
+      color: var(--white);
+      line-height: 1.5;
+    }
+
+    .panel {
+      margin-top: 24px;
+      background: var(--white);
+      color: var(--text-dark);
+      border-radius: 22px;
+      padding: 22px 20px;
+      box-shadow: 0 16px 40px rgba(16, 24, 40, 0.12);
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      color: var(--indigo);
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .panel p {
+      margin: 0 0 14px;
+      font-family: 'Roboto Condensed', Arial, sans-serif;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .scenario-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .scenario-card {
+      background: #f6f7fb;
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      padding: 14px 14px;
+    }
+
+    .scenario-card strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--indigo);
+      font-size: 0.98rem;
+    }
+
+    .scenario-card p {
+      margin: 0;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .primary-button,
+    .secondary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-weight: 800;
+      font-size: 0.98rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .primary-button {
+      background: var(--yellow);
+      color: var(--indigo);
+      box-shadow: 0 8px 18px rgba(38,34,98,0.22);
+    }
+
+    .primary-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(38,34,98,0.28);
+    }
+
+    .secondary-button {
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: var(--white);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.10);
+    }
+
+    .secondary-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.14);
+    }
+
+    .small-note {
+      margin-top: 14px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .small-note a {
+      color: var(--blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .small-note a:hover {
+      text-decoration: underline;
+    }
+
+    .site-footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #f7f7fb;
+      padding-bottom: 16px;
+    }
+
+    .footer-link {
+      color: #f7f7fb;
+      text-decoration: underline;
+    }
+
+    .footer-link:hover,
+    .footer-link:focus {
+      color: #ffde17;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 20px 14px 36px;
+      }
+
+      .hero {
+        padding: 24px 18px 26px;
+        border-radius: 20px;
+      }
+
+      .panel {
+        padding: 18px 16px;
+        border-radius: 18px;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      .primary-button,
+      .secondary-button {
+        width: 100%;
+      }
+
+      .hero-bg-logo {
+        width: 110px;
+        max-width: 32%;
+        right: -8px;
+        top: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <img src="dpm-logo-white.png" alt="" class="hero-bg-logo">
+      <div class="eyebrow" translate="no">Detroit People Mover</div>
+      <h1>Digital Wayfinding Beta Test</h1>
+    <p class="beta-note">
+      This tool is currently in beta. Please use it the way you naturally would while moving around Downtown Detroit, then complete the feedback survey to help us understand what worked, what was confusing, and what could be improved before wider release.
+    </p>
+    </section>
+
+    <section class="panel">
+  <h2>How this tool may be used</h2>
+  <p>
+    In the future, this tool could be shared through QR codes at hotels, parking lots, garages, event venues, visitor centers, and other downtown locations. The goal is to help residents, visitors, workers, and eventgoers quickly understand how the People Mover can fit into their trip.
+  </p>
+  <p>
+    Someone could scan the QR code after parking downtown, leaving a hotel, walking out of an event, or trying to reach a specific destination. The tool should help them answer two simple questions: “Where is the nearest station?” and “Which station should I use for where I’m going?”
+  </p>
+
+  <h2>What we're testing</h2>
+  <p>
+    We are looking for real-world feedback on whether the tool feels simple, accurate, and useful without needing extra explanation. Please pay attention to station recommendations, walking directions, entrance tips, accessibility notices, Apple Maps/Google Maps behavior, and anything that feels unclear.
+  </p>
+  <p>
+    You do not need to follow the scenarios perfectly. You can also use the tool during a normal day downtown and tell us where it helped, where it fell short, or where you expected something different to happen.
+  </p>
+</section>
+
+    <section class="panel">
+      <h2>Suggested Test Scenarios</h2>
+      <p>
+        Try a few of these real-life downtown situations, or use the tool during your own day downtown and tell us how it performs.
+      </p>
+
+      <div class="scenario-list">
+  <div class="scenario-card">
+    <strong>1. Going to a Tigers game</strong>
+    <p>
+      You are going to a Tigers game at Comerica Park. Park in a lot, garage, or on the street somewhere downtown. Use the digital wayfinding tool to figure out the nearest station to board, which station to exit, and how to walk from the People Mover to Comerica Park.
+    </p>
+  </div>
+
+  <div class="scenario-card">
+    <strong>2. Visiting Huntington Place</strong>
+    <p>
+      You are attending an event, conference, or meeting at Huntington Place. It's lunchtime, and you'd like to visit a restaurant near Library St & Grand River. From the first floor inside Huntington Place, navigate to the Huntington Place People Mover Station and then figure out which station to ride to for your lunchtime destination.
+    </p>
+  </div>
+
+  <div class="scenario-card">
+    <strong>3. Riverfront to Renaissance Center</strong>
+    <p>
+      You have just finished a stroll on the riverwalk and have ended up on the eastern side of the Renaissance Center. Use the tool to navigate to the Renaissance Center People Mover Station, starting from near Atwater st. & Beaubien St.
+    </p>
+  </div>
+
+  <div class="scenario-card">
+    <strong>4. Starting from Greektown</strong>
+    <p>
+      You are starting in Greektown after visiting a restaurant, casino, or entertainment spot. Use the tool to find the Greektown Station and navigate to another downtown destination. Pay attention to whether the station access information is helpful and whether anything feels confusing.
+    </p>
+  </div>
+
+  <div class="scenario-card">
+    <strong>5. Getting from parking to a downtown destination</strong>
+    <p>
+      Park anywhere downtown - a garage, surface lot, hotel, workplace, or street space - and use the tool as if you were trying to avoid a longer walk. Choose a destination such as Campus Martius, Ford Field, Hart Plaza, Little Caesars Arena, or the Rosa Parks Transit Center and see whether the tool helps you make a clear plan.
+    </p>
+  </div>
+
+  <div class="scenario-card">
+    <strong>6. Use it naturally for part of your day</strong>
+    <p>
+      If you are spending time downtown, use the tool whenever it seems helpful. Try it while walking between meetings, events, restaurants, parking, hotels, or transit connections. We want to know whether it feels useful in real life, not just whether it works in a controlled test.
+    </p>
+  </div>
+
+  <div class="scenario-card">
+    <strong>7. Notice what feels unclear</strong>
+    <p>
+      As you test, please note anything that slows you down: confusing wording, unclear buttons, unexpected map behavior, wrong or surprising station suggestions, missing accessibility information, or directions that do not match what you see on the street.
+    </p>
+  </div>
+</div>
+
+      <div class="button-row">
+        <a class="primary-button" href="index.html">Open the Wayfinding Tool</a>
+        <a class="secondary-button" href="https://forms.office.com/r/8N5Jphq2EG" target="_blank" rel="noopener noreferrer">Share Feedback</a>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <a href="privacy.html" class="footer-link">Privacy &amp; Data</a>
+      <span aria-hidden="true"> | </span>
+      <a href="ada.html" class="footer-link">ADA &amp; Accessibility</a>
+    </footer>
+  </div>
+</body>
+</html>
