@@ -897,6 +897,38 @@ body.map-choice-open {
 .manual-result .destination-actions {
   text-align: center;
 }
+.survey-panel {
+  margin-top: 24px;
+  text-align: center;
+  color: var(--white);
+}
+
+.survey-panel p {
+  margin: 0 0 10px;
+  font-family: 'Roboto Condensed', Arial, sans-serif;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.92);
+}
+
+.survey-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 13px 18px;
+  background: var(--yellow);
+  color: var(--indigo);
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(38,34,98,0.22);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.survey-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(38,34,98,0.28);
+}
   </style>
 </head>
 <body>
@@ -987,7 +1019,21 @@ body.map-choice-open {
     </a>
   </div>
 </section>
-  </div>
+    <section class="survey-panel">
+    <p>
+      Help us improve this beta tool after your trip.
+    </p>
+    <a
+      class="survey-button"
+      href="https://forms.office.com/r/8N5Jphq2EG"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Take the Feedback Survey
+    </a>
+  </section>
+</div>
+
 <div id="mapChoiceOverlay" class="map-choice-overlay" aria-hidden="true">
   <div class="map-choice-card" role="dialog" aria-modal="true" aria-labelledby="mapChoiceTitle">
     <h3 id="mapChoiceTitle">Open directions with</h3>
